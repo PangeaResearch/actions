@@ -1,0 +1,65 @@
+name: 'Semantic Version'
+description: Updates version using git tags
+inputs:
+  prefix:
+    description: 'use prefix in tags'
+    required: true
+    default: 'v'
+  mode:
+    description: 'type of version file: python, javascript, maven or text'
+    required: true
+  path:
+    description: 'target file to update'
+    required: true
+outputs:
+  version:
+    description: 'newely computed version'
+    value: ${{steps.export-version.outputs.version}}
+runs:
+  using: 'composite'
+  steps:
+    - shell: bash
+      run: |
+        if [ "${{ inputs.path }}" == "" ]; then
+          echo input parameter ''path'' is mandatory
+          exit 1;
+        fi
+
+        if [ ! -f "${{ inputs.path }}" ]; then
+          echo file ${{ inputs.path }} not found
+          exit 1;
+        fi
+
+    - id: base-version
+      shell: bash
+      run: |
+        if [ "${{ inputs.mode }}" == "python" ]; then
+          VERSION=$(cat ${{ inputs.path }} | tr -d " \"'" | cut -f2 -d=)
+        else
+          echo input parameter '''mode''' should be one of python, javascript, maven or text
+          exit 1
+        fi
+        echo ::set-output name=major::$(echo ${VERSION} | cut -d. -f1)
+        echo ::set-output name=minor::$(echo ${VERSION} | cut -d. -f2)
+        echo ::set-output name=build::$(echo ${VERSION} | cut -d. -f3)
+
+    - id: new-version
+      shell: bash
+      run: |
+        PREFIX=${{ inputs.prefix }}${{ steps.base-version.outputs.major }}.${{ steps.base-version.outputs.minor }}
+        BUILD=$(git tag -l "${PREFIX}.*" | cut -d. -f3 | sort -n | tail -1)
+        echo ::set-output name=build::$(( ${BUILD:-0} + 1))
+
+    - id: export-version
+      shell: 'bash'
+      run: |
+        OLD_VERSION=${{ steps.base-version.outputs.major }}.${{ steps.base-version.outputs.minor }}.${{ steps.base-version.outputs.build }}
+        NEW_VERSION=${{ steps.base-version.outputs.major }}.${{ steps.base-version.outputs.minor }}.${{ steps.new-version.outputs.build }}
+        if [ "${{ inputs.mode }}" == "python" ]; then
+          sed -i -e "s/${OLD_VERSION}/${NEW_VERSION}/" ${{ inputs.path }}
+        fi
+        echo ::set-output name=version::${NEW_VERSION}
+        git config user.email "build@pangeabiomed.com"
+        git config user.name "Builder"
+        git tag -a "${{ inputs.prefix }}${NEW_VERSION}" -m "${{ inputs.prefix }}${NEW_VERSION}"
+        git push --tags
