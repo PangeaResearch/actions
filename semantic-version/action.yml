@@ -46,6 +46,7 @@ runs:
     - id: new-version
       shell: bash
       run: |
+        git pull --tags
         PREFIX=${{ inputs.prefix }}${{ steps.base-version.outputs.major }}.${{ steps.base-version.outputs.minor }}
         BUILD=$(git tag -l "${PREFIX}.*" | cut -d. -f3 | sort -n | tail -1)
         echo ::set-output name=build::$(( ${BUILD:-0} + 1))
