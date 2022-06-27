@@ -37,6 +37,8 @@ runs:
           VERSION=$(cat ${{ inputs.path }} | tr -d " \"'" | cut -f2 -d=)
         elif [ "${{ inputs.mode }}" == "text" ]; then
           VERSION=$(cut -f2 -d= ${{ inputs.path }})
+        elif [ "${{ inputs.mode }}" == "javascript" ]; then
+          VERSION=$(jq -r .version ${{ inputs.path }})
         else
           echo input parameter '''mode''' should be one of python, javascript, maven or text
           exit 1
@@ -62,6 +64,10 @@ runs:
           sed -i -e "s/${OLD_VERSION}/${NEW_VERSION}/" ${{ inputs.path }}
         elif [ "${{ inputs.mode }}" == "text" ]; then
           echo ${NEW_VERSION} > ${{ inputs.path }}
+        elif [ "${{ inputs.mode }}" == "javascript" ]; then
+          tmpfile=$(mktemp /tmp/version.XXXXXX)
+          jq --arg ver ${NEW_VERSION} '.version = \($ver)' ${{ inputs.path }} > $tmpfile
+          cp $tmpfile ${{ inputs.path }}
         fi
         echo ::set-output name=version::${NEW_VERSION}
         git config user.email "build@pangeabiomed.com"
