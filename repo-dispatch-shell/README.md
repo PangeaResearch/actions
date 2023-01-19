@@ -8,7 +8,7 @@ Add this to the dispatching repo:
         # checks all steps before have finshed
         if: ${{ success() }}
         # required to run
-        uses: PangeaResearch/actions/repo-dispatch-shell@main
+        uses: PangeaResearch/actions/repo-dispatch-shell@v1
         with:
           # Personal access token
           token: ${{ secrets.PAT }}
