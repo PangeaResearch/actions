@@ -1,0 +1,16 @@
+name: 'Repository Dispatch'
+description: 'Custom repository dispatch event'
+inputs:
+  token:
+    description: 'GITHUB_TOKEN or a `repo` scoped Personal Access Token (PAT)'
+    required: true
+  repos:
+    description: 'The full name of the repository to send the dispatch.'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - run: bash ${{ github.action_path }}/deploy.sh ${{ inputs.repos }}
+      shell: bash
+      env:
+        MY_GIT_PAT: ${{ inputs.token }}
