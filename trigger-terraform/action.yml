@@ -1,0 +1,17 @@
+name: 'Nexus Tarraform'
+description: 'Request nexus to trigger TF'
+inputs:
+  credentials:
+    description: 'Credentials for nexus'
+    required: true
+  task:
+    description: 'The task ID'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - run: bash ${{ github.action_path }}/tf_nexus.sh
+      shell: bash
+      env:
+        NX_CRED: ${{ inputs.credenials }}
+        NX_TASK: ${{ inputs.task }}
