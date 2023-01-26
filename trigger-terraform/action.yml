@@ -4,8 +4,8 @@ inputs:
   credentials:
     description: 'Credentials for nexus'
     required: true
-  task:
-    description: 'The task ID'
+  environment:
+    description: 'The environment to Terraform'
     required: true
 runs:
   using: 'composite'
@@ -14,4 +14,4 @@ runs:
       shell: bash
       env:
         NX_CRED: ${{ inputs.credenials }}
-        NX_TASK: ${{ inputs.task }}
+        TF_DIR: ${{ inputs.environment }} 
