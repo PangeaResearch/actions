@@ -11,6 +11,7 @@ Add this to the dispatching repo:
         uses: PangeaResearch/actions/tf-nexus@v1
         with:
           # nexus credentials
-          credentials: ${{ secrets.MY_CREDENTIALS }}
-          # task ID
-          task: ${{ secrets.TASK_ID }}
+          credentials: ${{ secrets.MY_CREDENTIALS}}
+          # The environment to Terraform
+          environment: ${{ secrets.TASK_ID }}
+          
