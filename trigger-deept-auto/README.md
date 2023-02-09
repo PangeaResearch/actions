@@ -2,9 +2,9 @@
 
 ## Setup
 
-Add this to the dispatching repo: 
+Add this to the desired action: 
 
-      - name: Nexus Terraform
+      - name: Trigger Deept Auto
         # checks all steps before have finshed
         if: ${{ success() }}
         # required to run
