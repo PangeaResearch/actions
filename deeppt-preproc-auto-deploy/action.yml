@@ -10,4 +10,4 @@ runs:
     - run: bash ${{ github.action_path }}/deeppt-preproc-auto-deploy.sh
       shell: bash
       env:
-        NX_CRED: ${{ inputs.credenials }}
+        NX_CRED: ${{ inputs.credentials }}
