@@ -13,5 +13,5 @@ runs:
     - run: bash ${{ github.action_path }}/ecr_auto_deploy.sh
       shell: bash
       env:
-        NX_CRED: ${{ inputs.credenials }}
+        NX_CRED: ${{ inputs.credentials }}
         IMG_NAME: ${{ inputs.image }}
