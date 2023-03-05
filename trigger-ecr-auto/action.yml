@@ -4,14 +4,13 @@ inputs:
   credentials:
     description: 'Credentials for nexus'
     required: true
-  image:
-    description: 'name of image to pull'
+  images:
+    description: 'names of images to pull'
     required: true
 runs:
   using: 'composite'
   steps:
-    - run: bash ${{ github.action_path }}/ecr_auto_deploy.sh
+    - run: bash ${{ github.action_path }}/ecr_auto_deploy.sh ${{ inputs.images }}
       shell: bash
       env:
         NX_CRED: ${{ inputs.credentials }}
-        IMG_NAME: ${{ inputs.image }}
