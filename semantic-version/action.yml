@@ -15,6 +15,9 @@ outputs:
   version:
     description: 'newely computed version'
     value: ${{steps.export-version.outputs.version}}
+  short_version:
+    description: 'newely computed short version (major.minor)'
+    value: ${{steps.export-version.outputs.short_version}}
 runs:
   using: 'composite'
   steps:
@@ -60,6 +63,7 @@ runs:
       run: |
         OLD_VERSION=${{ steps.base-version.outputs.major }}.${{ steps.base-version.outputs.minor }}.${{ steps.base-version.outputs.build }}
         NEW_VERSION=${{ steps.base-version.outputs.major }}.${{ steps.base-version.outputs.minor }}.${{ steps.new-version.outputs.build }}
+        NEW_SHORT_VERSION=${{ steps.base-version.outputs.major }}.${{ steps.base-version.outputs.minor }}
         if [ "${{ inputs.mode }}" == "python" ]; then
           sed -i -e "s/${OLD_VERSION}/${NEW_VERSION}/" ${{ inputs.path }}
         elif [ "${{ inputs.mode }}" == "text" ]; then
@@ -70,6 +74,7 @@ runs:
           cp $tmpfile ${{ inputs.path }}
         fi
         echo ::set-output name=version::${NEW_VERSION}
+        echo ::set-output name=short_version::${NEW_SHORT_VERSION}
         git config user.email "build@pangeabiomed.com"
         git config user.name "Builder"
         git tag -a "${{ inputs.prefix }}${NEW_VERSION}" -m "${{ inputs.prefix }}${NEW_VERSION}"
