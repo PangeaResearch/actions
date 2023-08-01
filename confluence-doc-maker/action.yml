@@ -1,0 +1,13 @@
+name: 'confluence-doc-maker'
+description: 'Request nexus to trigger DAP'
+inputs:
+  credentials:
+    description: 'Credentials for nexus'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - run: bash ${{ github.action_path }}/confluence-doc-maker.sh
+      shell: bash
+      env:
+        NX_CRED: ${{ inputs.credentials }}
