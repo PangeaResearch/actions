@@ -11,6 +11,10 @@ inputs:
   path:
     description: 'target file to update'
     required: true
+  inc_build:
+    description: 'should we increase the version build number'
+    required: false
+    default: '1'    
 outputs:
   version:
     description: 'newely computed version'
@@ -56,7 +60,9 @@ runs:
         git pull --tags
         PREFIX=${{ inputs.prefix }}${{ steps.base-version.outputs.major }}.${{ steps.base-version.outputs.minor }}
         BUILD=$(git tag -l "${PREFIX}.*" | cut -d. -f3 | sort -n | tail -1)
-        echo ::set-output name=build::$(( ${BUILD:-0} + 1))
+        if [ "${{ inputs.inc_build }}" == "1" ]; then
+          echo ::set-output name=build::$(( ${BUILD:-0} + 1))
+        fi
 
     - id: export-version
       shell: 'bash'
@@ -75,7 +81,9 @@ runs:
         fi
         echo ::set-output name=version::${NEW_VERSION}
         echo ::set-output name=short_version::${NEW_SHORT_VERSION}
-        git config user.email "build@pangeabiomed.com"
-        git config user.name "Builder"
-        git tag -a "${{ inputs.prefix }}${NEW_VERSION}" -m "${{ inputs.prefix }}${NEW_VERSION}"
-        git push --tags
+        if [ "${{ inputs.inc_build }}" == "1" ]; then
+          git config user.email "build@pangeabiomed.com"
+          git config user.name "Builder"
+          git tag -a "${{ inputs.prefix }}${NEW_VERSION}" -m "${{ inputs.prefix }}${NEW_VERSION}"
+          git push --tags
+        fi
