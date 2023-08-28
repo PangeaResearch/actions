@@ -15,10 +15,10 @@ inputs:
     description: 'should we increase the version build number'
     required: false
     default: '1'    
-  no_push:
+  push:
     description: 'should we increase the version build number'
     required: true
-    default: 'false'
+    default: 'true'
 outputs:
   version:
     description: 'newely computed version'
@@ -87,7 +87,7 @@ runs:
         fi
         echo ::set-output name=version::${NEW_VERSION}
         echo ::set-output name=short_version::${NEW_SHORT_VERSION}
-        if [ "${{ inputs.inc_build }}" == "1" && no_push = 'false' ]; then
+        if [ "${{ inputs.inc_build }}" == "1" && push = 'true' ]; then
           git config user.email "build@pangeabiomed.com"
           git config user.name "Builder"
           git tag -a "${{ inputs.prefix }}${NEW_VERSION}" -m "${{ inputs.prefix }}${NEW_VERSION}"
