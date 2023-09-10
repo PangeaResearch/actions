@@ -87,7 +87,7 @@ runs:
         fi
         echo ::set-output name=version::${NEW_VERSION}
         echo ::set-output name=short_version::${NEW_SHORT_VERSION}
-        if [ "${{ inputs.inc_build }}" == "1" && "${{ inputs.push }}" == "true" ]; then
+        if [ "${{ inputs.inc_build }}" == "1" ] && [ "${{ inputs.push }}" == "true" ]; then
           git config user.email "build@pangeabiomed.com"
           git config user.name "Builder"
           git tag -a "${{ inputs.prefix }}${NEW_VERSION}" -m "${{ inputs.prefix }}${NEW_VERSION}"
