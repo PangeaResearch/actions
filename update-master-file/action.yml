@@ -43,9 +43,6 @@ runs:
       git add requirements-master.txt
       git commit -m "${{ inputs.commit-message }}"
       git push origin ${{ inputs.branch-name }}
-    env:
-      AUTO_BOT_NAME: ${{ vars.AUTO_BOT_NAME }}
-      AUTO_BOT_EMAIL: ${{ vars.AUTO_BOT_EMAIL }}
   - name: Open a PR
     run: |
       gh pr create --base main --head ${{ inputs.branch-name }} --title "${{ inputs.pr-title }}" --body "${{ inputs.pr-body }}"
