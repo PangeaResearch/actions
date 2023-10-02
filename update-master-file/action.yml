@@ -25,18 +25,20 @@ inputs:
 runs:
   using: 'composite'    
   steps:
-  - name: Checkout code
-    uses: actions/checkout@v2
   - name: Set up GitHub CLI
+    shell: bash
     run: |
       gh auth login --with-token <<< $GITHUB_TOKEN
   - name: Create new branch
+    shell: bash
     run: |
       git checkout -b ${{ inputs.branch-name }}
   - name: Fetch requirements-master file
+    shell: bash
     run: |
       curl -sL -H "Authorization: token $GITHUB_TOKEN" ${{ inputs.target-file-url }} > requirements-master.txt
   - name: Commit and push the file
+    shell: bash
     run: |
       git config user.name ${{ env.AUTO_BOT_NAME }}
       git config user.email ${{ env.AUTO_BOT_EMAIL }}
@@ -44,5 +46,6 @@ runs:
       git commit -m "${{ inputs.commit-message }}"
       git push origin ${{ inputs.branch-name }}
   - name: Open a PR
+    shell: bash
     run: |
       gh pr create --base main --head ${{ inputs.branch-name }} --title "${{ inputs.pr-title }}" --body "${{ inputs.pr-body }}"
