@@ -28,9 +28,9 @@ runs:
   - name: Fetch requirements-master file
     shell: bash
     run: |
-      curl -sL -H "Authorization: token $GITHUB_TOKEN" ${{ inputs.target-file-url }} > requirements-master.txt
+      curl -sL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ inputs.target-file-url }} > requirements-master.txt
   - name: Create Pull Request
-    uses: peter-evans/create-pull-request@v4
+    uses: PangeaResearch/create-pull-request@main
     with:
       commit-message: ${{ inputs.commit-message }}
       title: ${{ inputs.pr-title }}
