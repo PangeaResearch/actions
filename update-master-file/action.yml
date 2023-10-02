@@ -25,27 +25,16 @@ inputs:
 runs:
   using: 'composite'    
   steps:
-  - name: Set up GitHub CLI
-    shell: bash
-    run: |
-      gh auth login --with-token <<< $GITHUB_TOKEN
-  - name: Create new branch
-    shell: bash
-    run: |
-      git checkout -b ${{ inputs.branch-name }}
   - name: Fetch requirements-master file
     shell: bash
     run: |
       curl -sL -H "Authorization: token $GITHUB_TOKEN" ${{ inputs.target-file-url }} > requirements-master.txt
-  - name: Commit and push the file
-    shell: bash
-    run: |
-      git config user.name ${{ env.AUTO_BOT_NAME }}
-      git config user.email ${{ env.AUTO_BOT_EMAIL }}
-      git add requirements-master.txt
-      git commit -m "${{ inputs.commit-message }}"
-      git push origin ${{ inputs.branch-name }}
-  - name: Open a PR
-    shell: bash
-    run: |
-      gh pr create --base main --head ${{ inputs.branch-name }} --title "${{ inputs.pr-title }}" --body "${{ inputs.pr-body }}"
+  - name: Create Pull Request
+    uses: peter-evans/create-pull-request@v4
+    with:
+      commit-message: ${{ inputs.commit-message }}
+      title: ${{ inputs.pr-title }}
+      body: ${{ inputs.pr-body }}
+      base: main
+      branch: ${{ inputs.branch-name }}
+      delete-branch: true
