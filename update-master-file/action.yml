@@ -1,0 +1,51 @@
+name: 'Update Master File and Open PR'
+description: 'Fetches the requirements-master, commits, and creates a PR'
+inputs:
+  target-file-url:
+    description: 'URL of the target file to fetch'
+    required: false
+    default: 'https://raw.githubusercontent.com/PangeaResearch/pangea-ppm/main/requirements-master.txt'
+  commit-message:
+    description: 'Commit message'
+    required: false
+    default: 'Update requirements-master.txt'
+  branch-name:
+    description: 'Branch name for the new branch'
+    required: false
+    default: 'update-requirements-master'
+  pr-title:
+    description: 'Title for the PR'
+    required: false
+    default: 'Update requirements-master.txt'
+  pr-body:
+    description: 'Body for the PR'
+    required: false
+    default: 'Update requirements-master.txt'
+
+runs:
+  using: 'composite'    
+  steps:
+  - name: Checkout code
+    uses: actions/checkout@v2
+  - name: Set up GitHub CLI
+    run: |
+      gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+  - name: Create new branch
+    run: |
+      git checkout -b ${{ inputs.branch-name }}
+  - name: Fetch requirements-master file
+    run: |
+      curl -sL -H "Authorization: token $GITHUB_TOKEN" ${{ inputs.target-file-url }} > requirements-master.txt
+  - name: Commit and push the file
+    run: |
+      git config user.name ${{ env.AUTO_BOT_NAME }}
+      git config user.email ${{ env.AUTO_BOT_EMAIL }}
+      git add requirements-master.txt
+      git commit -m "${{ inputs.commit-message }}"
+      git push origin ${{ inputs.branch-name }}
+    env:
+      AUTO_BOT_NAME: ${{ vars.AUTO_BOT_NAME }}
+      AUTO_BOT_EMAIL: ${{ vars.AUTO_BOT_EMAIL }}
+  - name: Open a PR
+    run: |
+      gh pr create --base main --head ${{ inputs.branch-name }} --title "${{ inputs.pr-title }}" --body "${{ inputs.pr-body }}"
