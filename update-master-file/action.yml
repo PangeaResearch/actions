@@ -28,7 +28,7 @@ runs:
   - name: Fetch requirements-master file
     shell: bash
     run: |
-      curl -sL -H "Authorization: token ${{ env.GITHUB_TOKEN }}" ${{ inputs.target-file-url }} > requirements-master.txt
+      curl -sL -H "Authorization: token ${{ env.PPM_TOKEN }}" ${{ inputs.target-file-url }} > requirements-master.txt
   - name: Create Pull Request
     uses: PangeaResearch/create-pull-request@main
     with:
