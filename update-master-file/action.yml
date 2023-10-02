@@ -29,7 +29,7 @@ runs:
     uses: actions/checkout@v2
   - name: Set up GitHub CLI
     run: |
-      gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+      gh auth login --with-token <<< $GITHUB_TOKEN
   - name: Create new branch
     run: |
       git checkout -b ${{ inputs.branch-name }}
