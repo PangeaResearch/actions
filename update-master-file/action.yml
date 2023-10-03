@@ -1,10 +1,14 @@
 name: 'Update Master File and Open PR'
 description: 'Fetches the requirements-master, commits, and creates a PR'
 inputs:
-  target-file-url:
-    description: 'URL of the target file to fetch'
+  target-master-file-url:
+    description: 'URL of the master requirements file to fetch'
     required: false
     default: 'https://raw.githubusercontent.com/PangeaResearch/pangea-ppm/main/requirements-master.txt'
+  target-ppm-file-url:
+    description: 'URL of the ppm utils file to fetch'
+    required: false
+    default: 'https://raw.githubusercontent.com/PangeaResearch/pangea-ppm/main/ppm_utils.py'
   commit-message:
     description: 'Commit message'
     required: false
@@ -28,7 +32,8 @@ runs:
   - name: Fetch requirements-master file
     shell: bash
     run: |
-      curl -sL -H "Authorization: token ${{ env.PPM_TOKEN }}" ${{ inputs.target-file-url }} > requirements-master.txt
+      curl -sL -H "Authorization: token ${{ env.PPM_TOKEN }}" ${{ inputs.target-master-file-url }} > requirements-master.txt
+      curl -sL -H "Authorization: token ${{ env.PPM_TOKEN }}" ${{ inputs.target-ppm-file-url }} > ppm_utils.py
   - name: Create Pull Request
     uses: PangeaResearch/create-pull-request@main
     with:
