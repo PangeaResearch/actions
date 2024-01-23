@@ -16,7 +16,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - run: bash ${{ github.action_path }}/portal_stage_autodeploy.sh ${{ inputs.group }} ${{ inputs.version }} ${{ inputs.suffix }}
+    - run: bash ${{ github.action_path }}/portal_stage_autodeploy.sh "${{ inputs.group }}" "${{ inputs.version }}" "${{ inputs.suffix }}"
       shell: bash
       env:
         NX_CRED: ${{ inputs.credentials }}
