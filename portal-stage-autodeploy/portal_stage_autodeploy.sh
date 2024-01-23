@@ -1,5 +1,7 @@
  #!/bin/bash
-
+echo "=$3="
+lastOne="$3[1,-1]"
+echo "$lastOne"
 STAGE_DATA="$1,$2,$3"
 echo "the stage data is =$STAGE_DATA="
 curl -u "$NX_CRED" -X -v 'POST' \
